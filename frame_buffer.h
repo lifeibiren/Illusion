@@ -1,5 +1,4 @@
-#ifndef FRAME_BUFFER_H
-#define FRAME_BUFFER_H
+#pragma once
 
 #include <GL/gl.h>
 #include <GL/glu.h>
@@ -25,27 +24,26 @@ public:
     {
         return buf_;
     }
-    void place(const char_bitmap &cb, int x, int y)
-    {
-        FT_Int  i, j, p, q;
-        FT_Int  x_max = x + cb.width();
-        FT_Int  y_max = y + cb.height();
-        for ( i = x, p = 0; i < x_max; i++, p++ )
-        {
-          for ( j = y, q = 0; j < y_max; j++, q++ )
-          {
-            if ( i < 0      || j < 0       ||
-                 i >= height_ || j >= width_)
-              continue;
 
-            set_pixel(i, j, cb.buffer()[q * cb.width() + p],
-                    cb.buffer()[q * cb.width() + p],
-                    cb.buffer()[q * cb.width() + p]);
-          }
+    void place(const CharBitmap& cb, int x, int y)
+    {
+        for (std::size_t y0 = 0; y0 < cb.height(); y0++) {
+            for (std::size_t x0 = 0; x0 < cb.width(); x0++) {
+                std::uint8_t r, g, b;
+                r = g = b = cb.at(x0, y0);
+                set_pixel(x + x0, y + y0 - cb.height(), r, g, b);
+            }
         }
     }
+
+    void place(const std::vector<CharBitmap>& vcb, int x, int y)
+    {
+        for (const auto& cb : vcb) {
+            place(cb, x, y);
+            x += cb.width();
+        }
+    }
+
     int width_, height_;
     unsigned char *buf_;
 };
-
-#endif // FRAME_BUFFER_H

@@ -1,28 +1,5 @@
 #include "freetype2.h"
-
-void
-draw_bitmap( frame_buffer *fb,
-             FT_Bitmap*  bitmap,
-             FT_Int      x,
-             FT_Int      y)
-{
-  FT_Int  i, j, p, q;
-  FT_Int  x_max = x + bitmap->width;
-  FT_Int  y_max = y + bitmap->rows;
-
-
-  for ( i = x, p = 0; i < x_max; i++, p++ )
-  {
-    for ( j = y, q = 0; j < y_max; j++, q++ )
-    {
-      if ( i < 0      || j < 0       ||
-           i >= fb->height_ || j >= fb-> width_)
-        continue;
-
-      fb->set_pixel(i, j, bitmap->buffer[q * bitmap->width + p], bitmap->buffer[q * bitmap->width + p], bitmap->buffer[q * bitmap->width + p]);
-    }
-  }
-}
+#include "char_bitmap.h"
 
 freetype2::freetype2()
 {
@@ -61,12 +38,12 @@ void freetype2::set_fontsize(int width, int height)
         std::cerr<<"error setting font size "<<error<<std::endl;
     }
 }
-char_bitmap freetype2::render(char ch)
+CharBitmap freetype2::render(char ch)
 {
-    int error = FT_Load_Char(face, ch, FT_LOAD_RENDER );
-    char_bitmap bitmap(slot->bitmap.width, slot->bitmap.rows);
+    int error = FT_Load_Char(face, ch, FT_LOAD_RENDER);
+    CharBitmap bitmap(slot->bitmap.width, slot->bitmap.rows);
     if (error) {
-        std::cerr<<"freetype2 unable to render "<<error<<std::endl;
+        std::cerr << "freetype2 unable to render " << error << std::endl;
     } else {
         bitmap.fill(slot->bitmap);
     }

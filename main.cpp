@@ -22,13 +22,13 @@ void init(void)
    glShadeModel(GL_FLAT);
 //   makeCheckImage();
    ft.set_fontsize(12, 12);
-   fb.place(ft.render('H'), 0, 0);
+   //   fb.place(ft.render('H'), 0, 0);
+   fb.place(StringLine("Hello world").render(ft), 0, 12);
    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 }
 
 void display(void)
 {
-
    glClear(GL_COLOR_BUFFER_BIT);
    glRasterPos2i(0, 0);
    glDrawPixels(checkImageWidth, checkImageHeight, GL_RGB,
